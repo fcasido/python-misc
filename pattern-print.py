@@ -23,6 +23,7 @@ class Solution:
                     print (' ', end='')
             print()
     
-Solution().rightTriangle()
-Solution().hollowRightTriangle()
-Solution().hollowTriangle()
+x = Solution()
+x.rightTriangle()
+x.hollowRightTriangle()
+x.hollowTriangle()
