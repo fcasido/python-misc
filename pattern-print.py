@@ -1,3 +1,20 @@
+#leetcode solution
+#*    
+#**   
+#* *  
+#*  * 
+#*****
+#
+#*
+#**
+#***
+#****
+#*****
+#    *   
+#   * *  
+#  *   * 
+#********
+
 class Solution:
     def rightTriangle(self):
         for row in range(5):
