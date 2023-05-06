@@ -60,4 +60,7 @@ if args.g:
                 UsmUserData(user, authPassword=auth_password, authProtocol=getattr(hlapi, 'usmHMAC' + auth_protocol.upper()),
                              privPassword=priv_password, privProtocol=getattr(hlapi, 'usm' + priv_protocol.upper())),
                 UdpTransportTarget((address, 161)),
-                Context
+                ContextData(),
+           ObjectType(ObjectIdentity(port_oid)),
+           ObjectType(ObjectIdentity(desc_oid)))
+)
