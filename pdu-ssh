@@ -1,0 +1,34 @@
+#  script that will SSH to a Servertech PDU and send the following set commands pausing 2 seconds between commands
+import time
+import paramiko
+
+# Define the IP address, username, and password of the PDU
+ip_address = '192.168.1.1'
+username = 'admin'
+password = 'password'
+
+# Define the commands to send to the PDU
+commands = [
+    'set dns1 8.8.8.8',
+    'set dns2 4.4.4.4',
+    'set telnet disabled',
+    'set sntp primary 129.6.15.28',
+    'set sntp secondary 129.6.15.29',
+    'set sntp gmtoffset -8',
+    'set sntp dst enabled',
+    'set dhcp disabled',
+    'set option tempscale fahrenheit',
+]
+
+# Connect to the PDU over SSH
+ssh_client = paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh_client.connect(ip_address, username=username, password=password)
+
+# Send the commands to the PDU
+for command in commands:
+    stdin, stdout, stderr = ssh_client.exec_command(command)
+    time.sleep(2)
+
+# Close the SSH connection
+ssh_client.close()
