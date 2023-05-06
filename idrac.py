@@ -9,7 +9,6 @@
 
 import requests
 import json
-import pprint
 # Set the iDRAC IP address, username and password
 idrac_ip = '192.168.1.100'
 username = 'username'
