@@ -16,7 +16,7 @@ parser.add_argument('-X', metavar='priv_password', type=str, default='password',
                     help='the SNMPv3 privacy password (default: password)')
 
 group = parser.add_mutually_exclusive_group()
-group.add_argument('-g', action='store_true', help='list available ports and their descriptions')
+group.add_argument('-g', action='store_true', help='list available ports and their status')
 group.add_argument('-p', metavar='port', type=int, help='the port number of the outlet to modify')
 group.add_argument('-d', metavar='description', type=str, help='the new description for the outlet')
 
@@ -52,7 +52,9 @@ else:
     print('Power Status: {}'.format(power_status))
 
 if args.g:
+    port_oid = '1.3.6.1.4.1.1718.3.2.3.1.1'
     desc_oid = '1.3.6.1.4.1.1718.3.2.3.1.2'
+    status_oid = '1.3.6.1.4.1.1718.3.2.3.1.4'
     errorIndication, errorStatus, errorIndex, varBinds = next(
         bulkCmd(SnmpEngine(),
                 UsmUserData(user, authPassword=auth_password, authProtocol=getattr(hlapi, 'usmHMAC' + auth_protocol.upper()),
