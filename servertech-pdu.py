@@ -29,6 +29,28 @@ auth_password = args.A
 priv_protocol = args.x
 priv_password = args.X
 
+location_oid = '1.3.6.1.4.1.1718.3.2.1.1.3.1.2'
+power_status_oid = '1.3.6.1.4.1.1718.3.2.1.1.4.1.1'
+
+errorIndication, errorStatus, errorIndex, varBinds = next(
+    getCmd(SnmpEngine(),
+           UsmUserData(user, authPassword=auth_password, authProtocol=getattr(hlapi, 'usmHMAC' + auth_protocol.upper()),
+                        privPassword=priv_password, privProtocol=getattr(hlapi, 'usm' + priv_protocol.upper())),
+           UdpTransportTarget((address, 161)),
+           ContextData(),
+           ObjectType(ObjectIdentity(location_oid)),
+           ObjectType(ObjectIdentity(power_status_oid))))
+
+if errorIndication:
+    print(errorIndication)
+elif errorStatus:
+    print('%s at %s' % (errorStatus.prettyPrint(), errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+else:
+    location = varBinds[0][1].prettyPrint()
+    power_status = varBinds[1][1].prettyPrint()
+    print('Location: {}'.format(location))
+    print('Power Status: {}'.format(power_status))
+
 if args.g:
     desc_oid = '1.3.6.1.4.1.1718.3.2.3.1.2'
     errorIndication, errorStatus, errorIndex, varBinds = next(
@@ -36,32 +58,4 @@ if args.g:
                 UsmUserData(user, authPassword=auth_password, authProtocol=getattr(hlapi, 'usmHMAC' + auth_protocol.upper()),
                              privPassword=priv_password, privProtocol=getattr(hlapi, 'usm' + priv_protocol.upper())),
                 UdpTransportTarget((address, 161)),
-                ContextData(),
-                0, 10,
-                ObjectType(ObjectIdentity(desc_oid))))
-
-    if errorIndication:
-        print(errorIndication)
-    else:
-        for varBind in varBinds:
-            port_num = str(varBind[0][-1])
-            port_desc = str(varBind[1])
-            print('Port {}: {}'.format(port_num, port_desc))
-
-elif args.p:
-    port = args.p
-    desc_oid = '1.3.6.1.4.1.1718.3.2.3.1.2.' + str(port)
-    errorIndication, errorStatus, errorIndex, varBinds = next(
-        getCmd(SnmpEngine(),
-               UsmUserData(user, authPassword=auth_password, authProtocol=getattr(hlapi, 'usmHMAC' + auth_protocol.upper()),
-                            privPassword=priv_password, privProtocol=getattr(hlapi, 'usm' + priv_protocol.upper())),
-               UdpTransportTarget((address, 161)),
-               ContextData(),
-               ObjectType(ObjectIdentity(desc_oid))))
-
-    if errorIndication:
-        print(errorIndication)
-    elif errorStatus:
-        print('%s at %s' % (errorStatus.prettyPrint(), errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
-    else:
-        current_desc = varBinds
+                Context
